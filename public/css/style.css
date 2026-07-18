@@ -44,8 +44,6 @@ body {
 
 }
 
- 
-
 .f-info-socials i {
     margin-right: 1rem;
     font-size: 1.2rem;
@@ -58,6 +56,7 @@ body {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
+    gap:15px;
     align-items: space-evenly;
 }
 
@@ -65,13 +64,24 @@ body {
 listing-card {
     border: none !important;
     margin-bottom: 2rem !important;
+    width:100% !important;
 }
 
 .card-img-top {
     border-radius: 1rem !important;
     width: 100% !important;
     object-fit: cover !important;
+    height: 20rem !important;
 }
+
+@media(max-width:576px){
+
+.card-img-top{
+    height:15rem;
+}
+
+}
+
 .card-body {
     padding: 0 !important;
 }
@@ -127,6 +137,8 @@ listing-card {
         display: flex;
         flex-wrap: wrap;
         align-items: center;
+        justify-content:center;
+        gap:1rem;
 }
 .filter{
         display: inline-flex;
@@ -135,6 +147,7 @@ listing-card {
         margin-right: 2rem;
         margin-top: 2rem;
         opacity: 0.7;
+        min-width:70px;
         
 }
 
@@ -179,13 +192,36 @@ listing-card {
 .search-inp{
     border-radius: 25px;
     padding: 0.5rem 3rem 0.5rem 3rem;
-    font-size: 1rem
+    font-size: 1rem;
+    width:100%;
+    max-width:350px;
 }
 .dropdown-menu {
     max-height: 115px;
     overflow-y: auto; /*enable scrolling inside dropdown*/
+    width:100%;
+    max-width:250px;
 }
 .filterCountries {
     color: #fe424d;
     
 }
+
+/* Tablets */
+@media(max-width:992px){
+
+}
+
+/* Phones */
+
+@media(max-width:768px){
+
+}
+
+/* Small phones */
+
+@media(max-width:576px){
+
+}
+
+
