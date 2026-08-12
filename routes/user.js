@@ -7,9 +7,22 @@ const {saveRedirectUrl} = require("../middleware.js");
 
 const userController = require("../controllers/user.js");
 
+// EMAIL VERFICATION
 router.route("/signup")
 .get(userController.renderSignupForm)
 .post(wrapAsync(userController.signup));
+
+router.get("/verify/:token", userController.tokenVerify);
+
+// PASSWORD RESET:
+router.route("/forgot-password")
+.get(userController.renderEmailForm)
+.post(wrapAsync(userController.sendPasswordResetEmail));
+
+router.route("/resetPass/:token")
+.get(userController.renderResetPassForm)
+.post(wrapAsync(userController.resetPassword));
+
 
 router.route("/login")
 .get(userController.renderLoginForm)
@@ -23,8 +36,4 @@ router.route("/login")
 
 router.get("/logout", userController.logout);
     
-
-
-
-
 module.exports = router;

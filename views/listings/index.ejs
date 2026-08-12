@@ -1,118 +1,130 @@
-
 <% layout("/layouts/boilerplate") %>
-<body>
 
-    <div id="filters">
-        <div class="filter">
+    <div class="filters-wrapper">
+        <div id="filters">
+        
+            <div class="filter mt-3">
+                <a  href="/listings/category/trending" class="nav-link" >
+                    <div><i class="fa-solid fa-fire"></i></div>
+                    <p>Trending</p>
+                </a>
+            </div>
             
-            <a  href="/listings/category/trending" class="nav-link" >
-                <div><i class="fa-solid fa-fire"></i></div>
-                <p>Trending</p>
-            </a>
-            
-            <a  href="/listings/category/rooms" class="nav-link" >
-                <div><i class="fa-solid fa-bed"></i></div>
-                <p>Rooms</p>
-            </a>
-            
-            <a  href="/listings/category/iconic cities" class="nav-link" >
-                <div><i class="fa-solid fa-mountain-city"></i></div>
-                <p>Iconic Cities</p>
-            </a>
-            
-            <a  href="/listings/category/mountains" class="nav-link" >
-                <div><i class="fa-solid fa-mountain"></i></div>
-                <p>Mountains</p>
-            </a>
-            
-            <a  href="/listings/category/castles" class="nav-link" >
-                <div><i class="fa-brands fa-fort-awesome"></i></div>
-                <p>Castles</p>
-            </a>
-            
-            <a  href="/listings/category/arctic" class="nav-link" >
-                <div><i class="fa-regular fa-snowflake"></i></div>
-                <p>Arctic</p>
-            </a>
-            
-            <a  href="/listings/category/camping" class="nav-link" >
-                <div><i class="fa-solid fa-campground"></i></div>
-                <p>Camping</p>
-            </a>
-            
-            <a  href="/listings/category/farm" class="nav-link" >
-                <div><i class="fa-solid fa-cow"></i></div>
-                <p>Farm</p>
-            </a>
+            <div class="filter mt-3">
+                <a  href="/listings/category/rooms" class="nav-link" >
+                    <div><i class="fa-solid fa-bed"></i></div>
+                    <p>Rooms</p>
+                </a>
+            </div>
+
+            <div class="filter mt-3">
+                <a  href="/listings/category/iconic cities" class="nav-link" >
+                    <div><i class="fa-solid fa-mountain-city"></i></div>
+                    <p>Iconic Cities</p>
+                </a>
+            </div>
+
+            <div class="filter mt-3">
+                <a  href="/listings/category/mountains" class="nav-link" >
+                    <div><i class="fa-solid fa-mountain"></i></div>
+                    <p>Mountains</p>
+                </a>
+            </div>
+
+            <div class="filter mt-3">
+                <a  href="/listings/category/castles" class="nav-link" >
+                    <div><i class="fa-brands fa-fort-awesome"></i></div>
+                    <p>Castles</p>
+                </a>
+            </div>
+
+            <div class="filter mt-3">
+                <a  href="/listings/category/arctic" class="nav-link" >
+                    <div><i class="fa-regular fa-snowflake"></i></div>
+                    <p>Arctic</p>
+                </a>
+            </div>
+
+            <div class="filter mt-3">
+                <a  href="/listings/category/camping" class="nav-link" >
+                    <div><i class="fa-solid fa-campground"></i></div>
+                    <p>Camping</p>
+                </a>
+            </div>
+
+            <div class="filter mt-3">
+                <a  href="/listings/category/farm" class="nav-link" >
+                    <div><i class="fa-solid fa-cow"></i></div>
+                    <p>Farm</p>
+                </a>
+            </div>
         
         </div>
-
-
-        <div class="tax-toggle">
+        
+        <div class="tax-toggle mb-3">
             <div class="form-check-reverse form-switch">
-                <input class="form-check-input"
+              <input class="form-check-input"
                 type="checkbox"
                 role="switch"
                 id="switchCheckDefault">
                 <label class="form-check-label" 
                 for="switchCheckDefault">Display total after taxes</label>
             </div>
+        </div>
     </div>
-    <div class="row mt-3 mb-3">
-
-    <% for(let listing of allListings) { %>
-
-    <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4">
-
-        <a href="/listings/<%= listing._id %>" class="listing-link text-decoration-none">
-
-            <div class="card listing-card h-100">
-
-                <img
+    <div class="row mt-3 g-4">
+        <% for(let listing of allListings) { %>
+            <div class="col-12 col-sm-6 col-md-4 col-lg-4 mb-4">
+            
+                <a href="/listings/<%= listing._id %>" class="listing-link nav-link text-decoration-none">
+                <div class="card listing-card ">
+                    <img
                     src="<%= listing.image.url %>"
                     class="card-img-top"
-                    alt="listing_image"
-                >
-
-                <div class="card-img-overlay">
-                    abcd
+                    alt="listing_image">
                 </div>
-
+                
                 <div class="card-body">
-                    <p class="card-text">
+                    <p class="card-text nav-link">
                         <b><%= listing.title %></b><br>
                         &#x20B9;<%= listing.price.toLocaleString("en-IN") %>/night
                         <i class="tax-info">&nbsp;&nbsp;+18% GST</i>
                     </p>
                 </div>
+                </a>
 
             </div>
-
-        </a>
-
+        <% } %>
     </div>
 
-    <% } %>
+    <% if (typeof totalPages !== "undefined") { %>
+        <div class="pages mb-3">
+            <% for (let page = 1; page <= totalPages; page++) { %>
+                <a href="/listings?page=<%= page %>">
+                    <%= page %>
+                </a>
+            <% } %>
 
-</div>
-    <script>
+            <% if (currPage < totalPages) { %>
+                <a href="/listings?page=<%= next %>">Next</a>
+            <% } %>
+        </div>
+    <% } %>           
+
+<script>
     const taxSwitch = document.getElementById("switchCheckDefault");
-    taxSwitch.addEventListener("click", () => {
-        let taxInfo = document.getElementsByClassName("tax-info");
-        for(info of taxInfo) {
-            if(info.style.display != "inline"){
-               info.style.display = "inline";
-            }else{
-                info.style.display = "none";
-            }
-        }
-        
-    });
-    
-    </script>
+  taxSwitch.addEventListener("click", () => {
+    let taxInfo = document.getElementsByClassName("tax-info");
+    for(info of taxInfo) {
+      if(info.style.display != "inline"){
+        info.style.display = "inline";
+        }else{
+        info.style.display = "none";
+      }
+    }
+  });
+</script>
 
-
-</body>
 
 
  

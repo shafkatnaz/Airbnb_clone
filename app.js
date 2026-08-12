@@ -2,32 +2,26 @@ if(process.env.NODE_ENV != "production") {
     require('dotenv').config();
 }
 
-
-
 const mongoose = require("mongoose"); //connects Node.js with MongoDB
 const path = require("path"); //Node's built-in module for handling file paths safely
 const methodOverride = require("method-override"); //allows forms to simulates PUT,DELETE request[html supports POST,GET]
 const ejsMate = require("ejs-mate");
 const expressError = require("./utils/expressError.js");
-
 const session = require("express-session");
-const MongoStore = require('connect-mongo').default;
-
 const flash = require("connect-flash");
-
 const passport  = require("passport");
 const LocalStrategy = require("passport-local");
 const User = require("./models/user.js");
-
 const express = require("express"); //creates web server & routes
 const app = express(); //app is used to configure & run the server
-
 const listingRouter = require("./routes/listing.js");
 const reviewRouter = require("./routes/review.js");
 const userRouter = require("./routes/user.js");
+const countries = require("./utils/country.js");
 
 
-const dbUrl = process.env.ATLASDB_URL;
+
+const MONGO_URL = "mongodb://127.0.0.1:27017/wanderlust"; //stores MongoDB connection string [database name her is wanderlust]
 
 main().then(() => {
     console.log("connnection successful");
@@ -35,7 +29,7 @@ main().then(() => {
 .catch(err => console.log(err));
 
 async function main() { //connects my application with MongoDB
-  await mongoose.connect(dbUrl);
+  await mongoose.connect(MONGO_URL);
 }
 
 app.set("views", path.join(__dirname, "/views")); //eg of{path} above line [this works correctly],{Tells express where all ejs files are stored}
@@ -47,22 +41,8 @@ app.use(methodOverride("_method")); //activates method-override & [looks for _me
 app.engine('ejs', ejsMate);
 app.use(express.static(path.join(__dirname, "/public")));
 
-
-const store = MongoStore.create({
-    mongoUrl: dbUrl,
-    crypto: {
-        secret: process.env.SECRET,
-    },
-    touchAfter: 24 * 3600,
-});
-
-store.on("error", () => {
-    console.log("ERROR IN MONGO SESSION STORE", err);
-});
-
 const sessionOptions = {
-    store,
-    secret: process.env.SECRET,
+    secret: "mysupersecretcode",
     resave: false,
     saveUninitialized: true,
     cookie: {
@@ -72,13 +52,14 @@ const sessionOptions = {
     },
 };
 
+
+
 app.get("/", (req, res) => {
     res.send("working");
 });
 
 app.use(session(sessionOptions));
 app.use(flash());
-
 app.use(passport.initialize()); //starts passport.
 app.use(passport.session()); //keeps user logged in.
 passport.use(new LocalStrategy(User.authenticate())); //register strategy.
@@ -93,13 +74,18 @@ app.use((req, res, next) => {
     next();
 });
 
+app.use((req, res, next) => {
+    res.locals.countries = countries;
+    next();
+});
+
 app.use("/listings", listingRouter);
 app.use("/listings/:id/reviews", reviewRouter);
 app.use("/", userRouter);
+
 app.all("/*splat", (req, res, next) => {
     next(new expressError(404, "PAGE NOT FOUND!"));
 });
-
 // err handling middleware:
 app.use((err, req, res, next) => {
     let{status = 500, message = "ERROR OCCURED!"} = err;

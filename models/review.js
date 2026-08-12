@@ -1,11 +1,10 @@
 const mongoose = require('mongoose'); //Enabled Mongooose featuers[schema,models,find,update,delete & so on]
 const schema = mongoose.Schema; //schema is blueprint
 
-
 const reviewSchema = new schema ({
     comment: String,
     rating: {
-        type: String,
+        type: Number,
         min:1,
         max:5
     },

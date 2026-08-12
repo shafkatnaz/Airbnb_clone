@@ -3,7 +3,7 @@ const router = express.Router();
 const wrapAsync = require("../utils/wrapAsync.js");
 const Listing = require("../models/listing.js"); //import Listing model [enabled find({}), update..]
 const {isLoggedIn, isOwner, validateListing} = require("../middleware.js");
-
+const categories = require("../utils/category.js");
 const listingController = require("../controllers/listing.js");
 
 const multer  = require('multer');
@@ -19,7 +19,6 @@ router
     upload.single("listing[image]"),
     validateListing,
     wrapAsync (listingController.createListing)
-    
 );
 
 // new route:
@@ -35,6 +34,13 @@ router.get(
     "/category/:category",
     wrapAsync(listingController.filtered)
 );
+
+// pagination:(listing.js(routes))
+// router.get(
+//     "/listings?page",
+//     wrapAsync(listingController.selectedPages)
+// );
+
 
 router.get(
     "/country/:country",
