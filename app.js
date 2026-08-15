@@ -19,15 +19,12 @@ const reviewRouter = require("./routes/review.js");
 const userRouter = require("./routes/user.js");
 const countries = require("./utils/country.js");
 
-
-
-const MONGO_URL = "mongodb://127.0.0.1:27017/wanderlust"; //stores MongoDB connection string [database name her is wanderlust]
-
+const MONGO_URL = process.env.ATLASDB_URL;
+// const MONGO_URL = "mongodb://127.0.0.1:27017/wanderlust"; //stores MongoDB connection string [database name her is wanderlust]
 main().then(() => {
     console.log("connnection successful");
 })
 .catch(err => console.log(err));
-
 async function main() { //connects my application with MongoDB
   await mongoose.connect(MONGO_URL);
 }
