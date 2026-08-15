@@ -59,7 +59,7 @@ module.exports.sendPasswordResetEmail = async(req, res) => {
         existedEmail.passwordResetToken = token;
         await existedEmail.save();
 
-        const resetLink = `http://localhost:8080/resetPass/${token}`;
+        const resetLink = `${process.env.BASE_URL}/resetPass/${token}`;
         await sendPasswordResetEmail(email, resetLink);
         
         console.log(existedEmail);
