@@ -1,77 +1,65 @@
 const nodemailer = require("nodemailer");
-// Create a transporter using SMTP
 
-async function sendVerificationEmail(email, verificationLink){
-    
-  // Generate a test account
-  const testAccount = await nodemailer.createTestAccount();
+const { Resend } = require("resend");
+const resend = new Resend(process.env.RESEND_API_KEY);
 
-  console.log("Test account created:");
-  console.log("  User: %s", testAccount.user);
-  console.log("  Pass: %s", testAccount.pass);
+// Email Verification
+async function sendVerificationEmail(email, verificationLink) {
 
-  // Create a transporter
-  const transporter = nodemailer.createTransport({
-    host: testAccount.smtp.host,
-    port: testAccount.smtp.port,
-    secure: testAccount.smtp.secure,
-    auth: {
-      user: testAccount.user,
-      pass: testAccount.pass,
-    },
-  });
-  // Send a test message 1
-  const info = await transporter.sendMail({
-    from: `"Test App" <${testAccount.user}>`,
-    to: email,
-    
-    subject: "Email verification",
-    text: "This is an account verification mail.",
-    html: `
-        <p>Click below to verify your account.</p>
-        <a href="${verificationLink}">Verify Email</a>
-    `,
-  });
-  console.log("Message sent: %s", info.messageId);
-  console.log("Preview: %s", nodemailer.getTestMessageUrl(info));
+    const { data, error } = await resend.emails.send({
+        from: "onboarding@resend.dev",
+        to: email,
+        subject: "Verify your email",
+        html: `
+            <p>This is an account verification email.</p>
+            <p>Click the link below to verify your account:</p>
+            <p>
+                <a href="${verificationLink}">
+                    Verify Email
+                </a>
+            </p>
+        `
+    });
+
+    if (error) {
+        console.log("Email error:", error);
+        throw new Error(error.message);
+    }
+
+    console.log("Verification email sent:", data);
 }
-sendVerificationEmail().catch(console.error);
-// 2
+// Password Reset
 async function sendPasswordResetEmail(email, resetLink) {
-    
-  // Generate a test account
-  const testAccount = await nodemailer.createTestAccount();
 
-  console.log("Test account created:");
-  console.log("  User: %s", testAccount.user);
-  console.log("  Pass: %s", testAccount.pass);
+    const { data, error } = await resend.emails.send({
+        from: "onboarding@resend.dev",
+        to: email,
+        subject: "Reset your password",
+        html: `
+            <p>You requested to reset your password.</p>
 
-  // Create a transporter
-  const transporter = nodemailer.createTransport({
-    host: testAccount.smtp.host,
-    port: testAccount.smtp.port,
-    secure: testAccount.smtp.secure,
-    auth: {
-      user: testAccount.user,
-      pass: testAccount.pass,
-    },
-  });
-// Send a test message 2
-  const info = await transporter.sendMail({
-    from: `"Test App" <${testAccount.user}>`,
-    to: email,
-    subject: "Reset your password",
-    text: "Click the link below to reset your password.",
-    html: `
-        <p>You requested to reset your password.</p>
-        <p>Click the link below to choose a new password:</p>
-        <a href="${resetLink}">Reset Password</a>
-    `,
-  });
-  console.log("Message sent: %s", info.messageId);
-  console.log("Preview: %s", nodemailer.getTestMessageUrl(info));
+            <p>
+                Click the link below to choose a new password:
+            </p>
+
+            <p>
+                <a href="${resetLink}">
+                    Reset Password
+                </a>
+            </p>
+        `
+    });
+
+    if (error) {
+        console.log("Email error:", error);
+        throw new Error(error.message);
+    }
+
+    console.log("Password reset email sent:", data);
 }
-sendPasswordResetEmail().catch(console.error);
+module.exports = {
+    sendVerificationEmail,
+    sendPasswordResetEmail
+};
 
-module.exports = {sendVerificationEmail, sendPasswordResetEmail};
 
